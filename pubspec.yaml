@@ -1,0 +1,60 @@
+name: akrokol
+description: "Akrokol-Toz, Duman ve Buhar için  Profesyonel Çözümleri"
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: ^3.10.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  font_awesome_flutter: ^10.6.0
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.3.3
+  flutter_launcher_icons: ^0.14.4
+  webview_flutter: ^4.13.0
+  animated_splash_screen: ^1.3.0
+  excel: ^4.0.2
+  path_provider: ^2.1.1
+  share_plus: ^7.2.2
+  convex_bottom_bar: ^3.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter_lints: ^6.0.0
+flutter_launcher_icons:
+  path: ../
+
+flutter_icons:
+  image_path_android: "assets/icon.png"
+  image_path_ios: "assets/icon.png"
+  android : true
+  ios: true
+  web: false
+  windows: false
+  adaptive_icon_backgrund: "assets/icon.png"
+  adaptive_icon_foreground: "assets/icon.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/
+
+  fonts:
+    - family: Akrobat-Regular
+      fonts:
+        - asset: fonts/akrobat-regular.otf
+
+    - family: Akrobat-Semibold
+      fonts:
+        - asset: fonts/akrobat-semibold.otf
+
+
+    - family: Oswald-Regular
+      fonts:
+        - asset: fonts/oswald-regular.ttf
