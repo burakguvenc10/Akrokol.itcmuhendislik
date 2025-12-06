@@ -38,7 +38,7 @@ class _SplashPage extends State<Splash> {
                     crossAxisSpacing: 3,
                     crossAxisCount: 2,
                   ),
-                  children: Data.map((item) => Splash_item(item.asset, item.title)).toList(),
+                  //children: Data.map((item) => Splash_item(item.asset, item.title)).toList(),
                 ),
               ),
 
@@ -47,7 +47,7 @@ class _SplashPage extends State<Splash> {
   }
 }
 
-const Data = [
+/*const Data = [
   Splash_model(asset: 'assets/akrobot_kolu.jpg', title: 'Akrobat Emiş Kolları'),
   Splash_model(asset: 'assets/mobil_unite.png', title: 'Mobil Emiş Üniteleri'),
   Splash_model(asset: 'assets/labaratuvar_kolu.png', title: 'Laboratuvar Emiş Kolu'),
@@ -60,4 +60,4 @@ const Data = [
   Splash_model(asset: 'assets/endustriyel.png', title: 'Havalandırma Kanal Sistemleri'),
   Splash_model(asset: 'assets/aksesuar.png', title: 'Aksesuar ve Yedek Parça'),
 
-];
+];*/
