@@ -8,6 +8,7 @@ import 'page/Splash.dart';
 import 'page/Urunler.dart';
 import 'page/Anasayfa.dart';
 import 'page/Bilgi.dart';
+import 'package:flutter/foundation.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,6 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
       bottomNavigationBar: Bottombar(onTap: onTabTapped,),
       body:  PageView(
         controller: pageController,
+        physics: kIsWeb ? NeverScrollableScrollPhysics() : null,
         onPageChanged: (index) {
           setState(() {
             _selectedIndex = index;
@@ -60,7 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
         },
         children: <Widget>[
           Anasayfa(),
-          Urunler(),
+          if (!kIsWeb)
+            Urunler(),
           Bilgi()
         ],
       ),

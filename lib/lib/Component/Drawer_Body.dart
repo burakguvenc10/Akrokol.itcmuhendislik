@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class Drawer_Body extends StatefulWidget {
   @override
@@ -57,12 +58,8 @@ class Drawer_BodyState extends State<Drawer_Body> {
             children: [
               Row(
                 children: [
-                  Image(
-                      height: 20,
-                      width: 20,
-                      image: AssetImage('assets/phone.png'),
-                      fit: BoxFit.contain,
-                  ),
+                  FaIcon(FontAwesomeIcons.phone, color: Colors.green,weight: 3,fontWeight: FontWeight.bold),
+
                   Text(
                     '  0 212 671 70 97 – 98'
                     ,style: TextStyle(
@@ -79,34 +76,7 @@ class Drawer_BodyState extends State<Drawer_Body> {
 
               Row(
                 children: [
-                  Image(
-                      height: 20,
-                      width: 20,
-                      image: AssetImage('assets/fax.png'),
-                      fit: BoxFit.contain
-                  ),
-                  Text(
-                    '  0 212 671 70 99'
-                    ,style: TextStyle(
-                    fontSize: 16,  fontWeight: FontWeight.bold,
-                  ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-
-              SizedBox(
-                height: 6,
-              ),
-
-              Row(
-                children: [
-                  Image(
-                      height: 20,
-                      width: 20,
-                      image: AssetImage('assets/mail.png'),
-                      fit: BoxFit.contain
-                  ),
+                  FaIcon(FontAwesomeIcons.google, color: Colors.red,weight: 3,fontWeight: FontWeight.bold),
                   Text(
                     '  itc@itcmuhendislik.com'
                     ,style: TextStyle(
@@ -123,12 +93,8 @@ class Drawer_BodyState extends State<Drawer_Body> {
 
               Row(
                 children: [
-                  Image(
-                      height: 20,
-                      width: 20,
-                      image: AssetImage('assets/web.png'),
-                      fit: BoxFit.contain
-                  ),
+                  FaIcon(FontAwesomeIcons.globe, color: Colors.blueAccent,weight: 3, fontWeight: FontWeight.bold,),
+
                   Text(
                     '  akrokol.itcmuhendislik.com'
                     ,style: TextStyle(

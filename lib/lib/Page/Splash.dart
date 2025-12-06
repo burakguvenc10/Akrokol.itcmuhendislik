@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../Component/Splash_item.dart';
-import '../Model/Splash_model.dart';
 import 'package:flutter/services.dart';
-import '../Anim/Animated_splash.dart';
 import '../main.dart';
 
 class Splash extends StatefulWidget {

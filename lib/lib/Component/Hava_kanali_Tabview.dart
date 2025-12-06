@@ -1,12 +1,12 @@
 import 'dart:math';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'dart:math';
 import 'dart:io';
 import 'package:excel/excel.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:universal_html/html.dart' as html; // Web indirme işlemleri için
+import 'package:flutter/foundation.dart' show kIsWeb; // Web kontrolü için
 
 
 //---- CONTROLLER TANIMLARI ----
@@ -29,7 +29,6 @@ final Aci_controller = TextEditingController();
 final R1_controller = TextEditingController();
 final DirsekAlani_controller = TextEditingController();
 
-//--------------
 
 //Checkbox
 String sec = '';
@@ -89,7 +88,7 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
           SnackBar(
             content: Text("Tüm alanlar temizlendi."),
             duration: Duration(seconds: 1),
-            backgroundColor: Colors.lightGreen,
+            backgroundColor: Colors.orangeAccent,
           )
       );
     }
@@ -97,9 +96,13 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
     return Container(
       ///HAVA KANALI TAB_ITEM
       child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Form(
+          child: Center( // 1. Ortalamak için Center ekleyin
+            child: SizedBox( // 2. Genişliği sınırlamak için SizedBox ekleyin
+              // Web ise maksimum 600px genişlik olsun, değilse (mobil) tam ekran
+              width: kIsWeb ? 600 : double.infinity,
+              child: Padding(
+            padding: const EdgeInsets.all(30.0),
+            child: Form(
             key: _formkeyHava,
             autovalidateMode: AutovalidateMode.onUserInteraction,
             child: Column(
@@ -1145,6 +1148,8 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
               ],
             ),
           ),
+            ),
+          ),
         ),
       ),
     );
@@ -1168,11 +1173,12 @@ void dispose() {
   DirsekAlani_controller.dispose();
 }
 
+
 Future<void> excelExportHavaKanali(BuildContext context) async {
   var excel = Excel.createExcel();
 
-  // Sayfa Ayarları
-  Sheet sheetObject = excel['Hava Kanalı Hesaplama'];
+  // --- EXCEL SAYFA AYARLARI ---
+  Sheet sheetObject = excel['Hava Kanalı Hesabı'];
   excel.delete('Sheet1'); // Varsayılan boş sayfayı sil
 
   // Stil Tanımları
@@ -1181,14 +1187,13 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
     bold: true,
   );
 
-  // --- BAŞLIKLARI OLUŞTUR (1. SATIR) ---
+  // --- BAŞLIKLAR (Hava Kanalı İçin Özel) ---
   List<String> basliklar = [
     "Hava Debisi (m3/h)",
     "Hava Hızı (m/s)",
     "Kanal Çapı (mm)",
     "Kanal A (mm)",
     "Kanal B (mm)",
-    "Kanal Yüzeyi"
     "Birim Basınç Kaybı (Pa/m)",
     "Kanal Boyu (m)",
     "Kanal Alanı (m2)",
@@ -1198,14 +1203,14 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
     "Dirsek Alanı (m2)"
   ];
 
-  // Başlıkları döngüyle yazdıralım (A1, B1, C1...)
+  // Başlıkları Yazdır
   for (int i = 0; i < basliklar.length; i++) {
     var cell = sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 0));
     cell.value = TextCellValue(basliklar[i]);
     cell.cellStyle = headerStyle;
   }
 
-  // --- VERİLERİ EKLE (2. SATIR) ---
+  // --- VERİLERİ TOPLA ---
   // Controller'lardan verileri alıyoruz
   List<String> veriler = [
     Havadebisi_controller.text,
@@ -1213,7 +1218,6 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
     Kanalcapi_controller.text,
     PrizmatikkanalA_controller.text,
     PrizmatikkanalB_controller.text,
-    KanalYuzeyi.text,
     Basinckaybi_controller.text,
     Kanalboyu_controller.text,
     Kanalalani_controller.text,
@@ -1223,29 +1227,53 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
     DirsekAlani_controller.text
   ];
 
+  // Verileri Yazdır
   for (int i = 0; i < veriler.length; i++) {
     // Boş veri varsa "-" koyalım
     String veri = veriler[i].isEmpty ? "-" : veriler[i];
     sheetObject.cell(CellIndex.indexByColumnRow(columnIndex: i, rowIndex: 1)).value = TextCellValue(veri);
   }
+  // -------------------------------------------------------
 
-  // Dosya Kaydetme ve İndirme Mantığı (Önceki ile aynı)
+  // Dosya İsmi
   String fileName = "Hava_Kanali_Hesap_${DateTime.now().millisecondsSinceEpoch}.xlsx";
-  var fileBytes = excel.save();
+
+  // --- KRİTİK DÜZELTME ---
+  // excel.save() yerine excel.encode() kullanıyoruz.
+  // Bu sayede Web'de otomatik (çift) indirmeyi engelliyoruz.
+  var fileBytes = excel.encode();
 
   if (fileBytes != null) {
+
+    // --- WEB İÇİN ÖZEL KOD ---
+    if (kIsWeb) {
+      final blob = html.Blob([fileBytes], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute("download", fileName) // İsmi buradan alır
+        ..click();
+
+      html.Url.revokeObjectUrl(url);
+      return;
+    }
+    // -------------------------
+
+    // --- MOBİL (ANDROID / IOS) ---
     if (Platform.isAndroid) {
       try {
         Directory directory = Directory('/storage/emulated/0/Download');
         if (!await directory.exists()) {
           directory = (await getExternalStorageDirectory())!;
         }
+
         final path = "${directory.path}/$fileName";
+
         File(path)
           ..createSync(recursive: true)
           ..writeAsBytesSync(fileBytes);
 
-        // YUKARIDAN GELEN BANNER
+        // Banner Gösterimi
         if (context.mounted) {
           ScaffoldMessenger.of(context).showMaterialBanner(
             MaterialBanner(
@@ -1267,8 +1295,6 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
             }
           });
         }
-
-        // Paylaşımı aç
         await _shareFile(fileBytes, fileName);
 
       } catch (e) {

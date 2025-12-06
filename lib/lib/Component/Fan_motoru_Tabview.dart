@@ -1,10 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'dart:io'; // Dosya işlemleri için
 import 'package:excel/excel.dart'; // Excel oluşturmak için
 import 'package:path_provider/path_provider.dart'; // Telefon hafızasına erişim için
 import 'package:share_plus/share_plus.dart'; // Dosyayı paylaşmak/kaydetmek için
+import 'package:universal_html/html.dart' as html; // Web indirme işlemleri için
+import 'package:flutter/foundation.dart' show kIsWeb; // Web kontrolü için
 
 
 //--CONTROLLER TANIMLARI --
@@ -41,7 +42,7 @@ class Fan_motoru extends State<Fan_motoru_Tabview> {
         SnackBar(
           content: Text("Tüm alanlar temizlendi."),
           duration: Duration(seconds: 1),
-          backgroundColor: Colors.lightGreen,
+          backgroundColor: Colors.orangeAccent,
         )
     );
   }
@@ -51,284 +52,290 @@ class Fan_motoru extends State<Fan_motoru_Tabview> {
     return Container(
       /// FAN MOTORU TAB_ITEM
       child: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(30.0),
-          child: Form(
-            key: _formKeyMotor,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children:[
-                Container(
-                  alignment: Alignment.centerRight,
+          child: Center( // 1. Ortalamak için Center ekleyin
+            child: SizedBox( // 2. Genişliği sınırlamak için SizedBox ekleyin
+              // Web ise maksimum 600px genişlik olsun, değilse (mobil) tam ekran
+              width: kIsWeb ? 600 : double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Form(
+                  key: _formKeyMotor,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end, // Sağa yasla
-                        children: [
-                          Column(
-                            children: [
-                              IconButton(
-                                iconSize: 32,
-                                icon: FaIcon(FontAwesomeIcons.solidFileExcel, color: Colors.green),
-                                onPressed: () {
-                                  if (Havadebisi_controller.text.isEmpty || Motorgucu_controller.text.isEmpty) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(content: Text("Lütfen Hesaplama Yapınız"))
-                                    );
-                                  } else {
-                                    excelExport(context); // Excel fonksiyonunu çağır
-                                  }
-                                },
-                              ),
-                              Text("Paylaş ve İndir", style: TextStyle(fontSize: 8, color: Colors.black26), textAlign: TextAlign.center,),
-                            ],
-                          ),
+                    children:[
+                      Container(
+                        alignment: Alignment.centerRight,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end, // Sağa yasla
+                              children: [
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      iconSize: 32,
+                                      icon: FaIcon(FontAwesomeIcons.solidFileExcel, color: Colors.green),
+                                      onPressed: () {
+                                        if (Havadebisi_controller.text.isEmpty || Motorgucu_controller.text.isEmpty) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                              SnackBar(content: Text("Lütfen Hesaplama Yapınız"))
+                                          );
+                                        } else {
+                                          excelExport(context); // Excel fonksiyonunu çağır
+                                        }
+                                      },
+                                    ),
+                                    Text("Paylaş ve İndir", style: TextStyle(fontSize: 8, color: Colors.black26), textAlign: TextAlign.center,),
+                                  ],
+                                ),
 
-                          SizedBox(width: 1), // İki buton arası boşluk
+                                SizedBox(width: 1), // İki buton arası boşluk
 
-                          Column(
-                            children: [
-                              IconButton(
-                                iconSize: 32,
-                                icon: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
-                                onPressed: () {
-                                  tumAlanlariTemizle(); // Fonksiyonu çağır
-                                },
-                              ),
-                              Text("Temizle", style: TextStyle(fontSize: 8, color: Colors.black26)),
-                            ],
-                          ),
-                        ],
+                                Column(
+                                  children: [
+                                    IconButton(
+                                      iconSize: 32,
+                                      icon: FaIcon(FontAwesomeIcons.trashCan, color: Colors.red),
+                                      onPressed: () {
+                                        tumAlanlariTemizle(); // Fonksiyonu çağır
+                                      },
+                                    ),
+                                    Text("Temizle", style: TextStyle(fontSize: 8, color: Colors.black26)),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
+
+                      Text(
+                        '- Motor Gücü -',style: TextStyle(fontSize: 12,color: Colors.grey[500]),
+                      ),
+
+                      SizedBox(
+                        height: 13,
+                      ),
+                      TextFormField(
+                        controller: Havadebisi_controller,
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(color: Colors.redAccent),
+                            border: OutlineInputBorder(),
+                            labelText: 'Hava Debisi',
+                            suffixIcon: IconButton(
+                              onPressed: Havadebisi_controller.clear,
+                              icon: Icon(Icons.clear_sharp),
+                              color: Colors.red,
+                            ),
+                            suffixText: 'm3/h',
+                            hintText: 'Hava Debisini Yazınız (m3/h)'
+                        ),
+                        keyboardType: TextInputType.number,
+                        maxLines: 1,
+                        onSaved: (deger) {
+                          setState(() {
+                          });
+                        },
+                        onChanged: (deger){
+                          setState(() {
+                            if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
+                              MotorGucu_Sonuc();
+                              motorgucu_check = true;
+                            }
+                            else{
+                              motorgucu_check = false;
+                            }
+                          });
+                        },
+
+                        validator: (deger) {
+                          if(deger!.isEmpty){
+                            return 'Bir Değer Girmediniz!';
+                          }else{
+                            return null;
+                          }
+                        },
+                      ),
+
+                      SizedBox(
+                        height: 17,
+                      ),
+
+                      TextFormField(
+                        controller: Toplambasinckaybi_controller,
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(color: Colors.redAccent),
+                            border: OutlineInputBorder(),
+                            labelText: 'Toplam Basınç Kaybı',
+                            suffixIcon: IconButton(
+                              onPressed: Toplambasinckaybi_controller.clear,
+                              icon: Icon(Icons.clear_sharp),
+                              color: Colors.red,
+                            ),
+                            suffixText: 'Pa',
+                            hintText: 'Toplam Basınç Kaybını Yazınız (Pa)'
+                        ),
+                        keyboardType: TextInputType.number,
+                        maxLines: 1,
+                        onSaved: (deger) {
+                          setState(() {
+                          });
+                        },
+                        onChanged: (deger){
+                          setState(() {
+                            if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
+                              MotorGucu_Sonuc();
+                              motorgucu_check = true;
+                            }
+                            else{
+                              motorgucu_check = false;
+                            }
+                          });
+                        },
+
+                        validator: (deger) {
+                          if(deger!.isEmpty){
+                            return 'Bir Değer Girmediniz!';
+                          }else{
+                            return null;
+                          }
+                        },
+                      ),
+
+                      SizedBox(
+                        height: 17,
+                      ),
+
+                      TextFormField(
+                        controller: Motorverimi_controller,
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(color: Colors.redAccent),
+                            border: OutlineInputBorder(),
+                            labelText: 'Motor Verimi',
+                            suffixIcon: IconButton(
+                              onPressed: Motorverimi_controller.clear,
+                              icon: Icon(Icons.clear_sharp),
+                              color: Colors.red,
+                            ),
+                            suffixText: '%',
+                            hintText: 'Motor Verimini Yazınız (%)'
+                        ),
+                        keyboardType: TextInputType.number,
+                        maxLines: 1,
+                        onSaved: (deger) {
+                          //_IsEmpty = deger!;
+                          setState(() {
+                          });
+                        },
+                        onChanged: (deger){
+                          setState(() {
+                            if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
+                              MotorGucu_Sonuc();
+                              motorgucu_check = true;
+                            }
+                            else{
+                              motorgucu_check = false;
+                            }
+                          });
+                        },
+
+                        validator: (deger) {
+                          if(deger!.isEmpty){
+                            return 'Bir Değer Girmediniz!';
+                          }else{
+                            return null;
+                          }
+                        },
+                      ),
+
+                      SizedBox(
+                        height: 17,
+                      ),
+
+                      TextFormField(
+                        controller: Fanverimi_controller,
+                        decoration: InputDecoration(
+                            errorStyle: TextStyle(color: Colors.redAccent),
+                            border: OutlineInputBorder(),
+                            labelText: 'Fan Verimi',
+                            suffixIcon: IconButton(
+                              onPressed: Fanverimi_controller.clear,
+                              icon: Icon(Icons.clear_sharp),
+                              color: Colors.red,
+                            ),
+                            suffixText: '%',
+                            hintText: 'Fan Verimini Yazınız (%)'
+                        ),
+                        keyboardType: TextInputType.number,
+                        maxLines: 1,
+                        onSaved: (deger) {
+                          //_IsEmpty = deger!;
+                          setState(() {
+                          });
+                        },
+                        onChanged: (deger){
+                          setState(() {
+                            if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
+                              MotorGucu_Sonuc();
+                              motorgucu_check = true;
+                            }
+                            else{
+                              motorgucu_check = false;
+                            }
+                          });
+                        },
+
+                        validator: (deger) {
+                          if(deger!.isEmpty){
+                            return 'Bir Değer Girmediniz!';
+                          }else{
+                            return null;
+                          }
+                        },
+                      ),
+
+                      SizedBox(
+                        height: 17,
+                      ),
+
+                      TextFormField(
+                        controller: Motorgucu_controller,
+                        enabled: motorgucu_check,
+                        showCursor: false,
+                        decoration: InputDecoration(
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Colors.lightGreen,
+                              )
+                          ),
+                          errorStyle: TextStyle(color: Colors.redAccent),
+                          border: OutlineInputBorder(),
+                          labelText: 'Motor Gücü ',
+                          suffixText: 'Kw',
+                        ),
+                        keyboardType: TextInputType.none,
+                        maxLines: 1,
+                        onSaved: (deger) {
+                          setState(() {
+                          });
+                        },
+                        onChanged: (deger){
+                          setState((){
+                            Motorgucu_controller.value.text;
+                          });
+                        },
+                      ),
+
+                      SizedBox(
+                        height: 13,
+                      ),
+
                     ],
                   ),
                 ),
-
-                Text(
-                  '- Motor Gücü -',style: TextStyle(fontSize: 12,color: Colors.grey[500]),
-                ),
-
-                SizedBox(
-                  height: 13,
-                ),
-                TextFormField(
-                  controller: Havadebisi_controller,
-                  decoration: InputDecoration(
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      border: OutlineInputBorder(),
-                      labelText: 'Hava Debisi',
-                      suffixIcon: IconButton(
-                        onPressed: Havadebisi_controller.clear,
-                        icon: Icon(Icons.clear_sharp),
-                        color: Colors.red,
-                      ),
-                      suffixText: 'm3/h',
-                      hintText: 'Hava Debisini Yazınız (m3/h)'
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLines: 1,
-                  onSaved: (deger) {
-                    setState(() {
-                    });
-                  },
-                  onChanged: (deger){
-                    setState(() {
-                      if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
-                        MotorGucu_Sonuc();
-                        motorgucu_check = true;
-                      }
-                      else{
-                        motorgucu_check = false;
-                      }
-                    });
-                  },
-
-                  validator: (deger) {
-                    if(deger!.isEmpty){
-                      return 'Bir Değer Girmediniz!';
-                    }else{
-                      return null;
-                    }
-                  },
-                ),
-
-                SizedBox(
-                  height: 17,
-                ),
-
-                TextFormField(
-                  controller: Toplambasinckaybi_controller,
-                  decoration: InputDecoration(
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      border: OutlineInputBorder(),
-                      labelText: 'Toplam Basınç Kaybı',
-                      suffixIcon: IconButton(
-                        onPressed: Toplambasinckaybi_controller.clear,
-                        icon: Icon(Icons.clear_sharp),
-                        color: Colors.red,
-                      ),
-                      suffixText: 'Pa',
-                      hintText: 'Toplam Basınç Kaybını Yazınız (Pa)'
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLines: 1,
-                  onSaved: (deger) {
-                    setState(() {
-                    });
-                  },
-                  onChanged: (deger){
-                    setState(() {
-                      if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
-                        MotorGucu_Sonuc();
-                        motorgucu_check = true;
-                      }
-                      else{
-                        motorgucu_check = false;
-                      }
-                    });
-                  },
-
-                  validator: (deger) {
-                    if(deger!.isEmpty){
-                      return 'Bir Değer Girmediniz!';
-                    }else{
-                      return null;
-                    }
-                  },
-                ),
-
-                SizedBox(
-                  height: 17,
-                ),
-
-                TextFormField(
-                  controller: Motorverimi_controller,
-                  decoration: InputDecoration(
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      border: OutlineInputBorder(),
-                      labelText: 'Motor Verimi',
-                      suffixIcon: IconButton(
-                        onPressed: Motorverimi_controller.clear,
-                        icon: Icon(Icons.clear_sharp),
-                        color: Colors.red,
-                      ),
-                      suffixText: '%',
-                      hintText: 'Motor Verimini Yazınız (%)'
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLines: 1,
-                  onSaved: (deger) {
-                    //_IsEmpty = deger!;
-                    setState(() {
-                    });
-                  },
-                  onChanged: (deger){
-                    setState(() {
-                      if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
-                        MotorGucu_Sonuc();
-                        motorgucu_check = true;
-                      }
-                      else{
-                        motorgucu_check = false;
-                      }
-                    });
-                  },
-
-                  validator: (deger) {
-                    if(deger!.isEmpty){
-                      return 'Bir Değer Girmediniz!';
-                    }else{
-                      return null;
-                    }
-                  },
-                ),
-
-                SizedBox(
-                  height: 17,
-                ),
-
-                TextFormField(
-                  controller: Fanverimi_controller,
-                  decoration: InputDecoration(
-                      errorStyle: TextStyle(color: Colors.redAccent),
-                      border: OutlineInputBorder(),
-                      labelText: 'Fan Verimi',
-                      suffixIcon: IconButton(
-                        onPressed: Fanverimi_controller.clear,
-                        icon: Icon(Icons.clear_sharp),
-                        color: Colors.red,
-                      ),
-                      suffixText: '%',
-                      hintText: 'Fan Verimini Yazınız (%)'
-                  ),
-                  keyboardType: TextInputType.number,
-                  maxLines: 1,
-                  onSaved: (deger) {
-                    //_IsEmpty = deger!;
-                    setState(() {
-                    });
-                  },
-                  onChanged: (deger){
-                    setState(() {
-                      if(Havadebisi_controller.value.text != null && Toplambasinckaybi_controller.value.text != null && Fanverimi_controller.value.text != null){
-                        MotorGucu_Sonuc();
-                        motorgucu_check = true;
-                      }
-                      else{
-                        motorgucu_check = false;
-                      }
-                    });
-                  },
-
-                  validator: (deger) {
-                    if(deger!.isEmpty){
-                      return 'Bir Değer Girmediniz!';
-                    }else{
-                      return null;
-                    }
-                  },
-                ),
-
-                SizedBox(
-                  height: 17,
-                ),
-
-                TextFormField(
-                  controller: Motorgucu_controller,
-                  enabled: motorgucu_check,
-                  showCursor: false,
-                  decoration: InputDecoration(
-                    focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: Colors.lightGreen,
-                        )
-                    ),
-                    errorStyle: TextStyle(color: Colors.redAccent),
-                    border: OutlineInputBorder(),
-                    labelText: 'Motor Gücü ',
-                    suffixText: 'Kw',
-                  ),
-                  keyboardType: TextInputType.none,
-                  maxLines: 1,
-                  onSaved: (deger) {
-                    setState(() {
-                    });
-                  },
-                  onChanged: (deger){
-                    setState((){
-                      Motorgucu_controller.value.text;
-                    });
-                  },
-                ),
-
-                SizedBox(
-                  height: 13,
-                ),
-
-              ],
+              ),
             ),
           ),
-        ),
       ),
     );
   }
@@ -375,19 +382,33 @@ Future<void> excelExport(BuildContext context) async {
   sheetObject.cell(CellIndex.indexByString("D2")).value = TextCellValue(Fanverimi_controller.text);
   sheetObject.cell(CellIndex.indexByString("E2")).value = TextCellValue(Motorgucu_controller.text);
 
-  // Dosya ismini benzersiz yapalım (üzerine yazmasın diye tarih ekliyoruz)
+  // Dosya ismini benzersiz yapalım
   String fileName = "Fan_Motoru_${DateTime.now().millisecondsSinceEpoch}.xlsx";
 
-  var fileBytes = excel.save();
+  // --- DÜZELTME BURADA YAPILDI ---
+  // excel.save() Web'de otomatik indirme tetikler.
+  // excel.encode() ise sadece veriyi oluşturur, indirmeyi bizim kontrolümüze bırakır.
+  var fileBytes = excel.encode();
 
   if (fileBytes != null) {
+
+    // --- WEB İÇİN ÖZEL KOD BLOĞU ---
+    if (kIsWeb) {
+      final blob = html.Blob([fileBytes], 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute("download", fileName)
+        ..click();
+      html.Url.revokeObjectUrl(url);
+      return;
+    }
+    // -------------------------------
+
     if (Platform.isAndroid) {
       // --- ANDROID İÇİN İNDİRİLENLER KLASÖRÜNE KAYIT ---
       try {
-        // Android'de varsayılan Download yolu
         Directory directory = Directory('/storage/emulated/0/Download');
 
-        // Eğer bu yol yoksa (bazı telefonlarda farklı olabilir), external storage'a dön
         if (!await directory.exists()) {
           directory = (await getExternalStorageDirectory())!;
         }
@@ -398,8 +419,8 @@ Future<void> excelExport(BuildContext context) async {
           ..createSync(recursive: true)
           ..writeAsBytesSync(fileBytes);
 
-        // 1. Kullanıcıya dosyanın indirildiğini HABER VER (YUKARIDAN GELEN BANNER).
-        if (context.mounted) { // Güvenlik kontrolü
+        // Banner Gösterimi
+        if (context.mounted) {
           ScaffoldMessenger.of(context).showMaterialBanner(
             MaterialBanner(
               content: Text(
@@ -421,7 +442,6 @@ Future<void> excelExport(BuildContext context) async {
             ),
           );
 
-          // Banner'ın 5 saniye sonra otomatik kapanmasını sağla
           Future.delayed(Duration(seconds: 5), () {
             if (context.mounted) {
               ScaffoldMessenger.of(context).hideCurrentMaterialBanner();
@@ -429,15 +449,13 @@ Future<void> excelExport(BuildContext context) async {
           });
         }
 
-        // 2. DOSYA İNDİRİLDİKTEN SONRA PAYLAŞIM EKRANINI AÇ.
         await _shareFile(fileBytes, fileName);
 
       } catch (e) {
-        // İndirme başarısız olursa yine de paylaşım ekranını açarak kullanıcıya bir seçenek sun.
         await _shareFile(fileBytes, fileName);
       }
     } else {
-      // --- IOS İÇİN (Zaten sadece paylaşma seçeneği vardı, aynı kalıyor) ---
+      // iOS
       await _shareFile(fileBytes, fileName);
     }
   }

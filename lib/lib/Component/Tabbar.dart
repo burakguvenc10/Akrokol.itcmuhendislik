@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'Hava_kanali_Tabview.dart';
 import 'Fan_motoru_Tabview.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // Web kontrolü için
 
 class Tabbar extends StatefulWidget {
   const Tabbar({Key? key}) : super(key:key);
@@ -14,6 +15,7 @@ class Tabbar_BodyState extends State<Tabbar> {
   @override
   Widget build(BuildContext context) {
     int selectedRadio = 0;
+
     @override
     void initState() {
       super.initState();
@@ -22,7 +24,12 @@ class Tabbar_BodyState extends State<Tabbar> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        body: Column(
+        body: Center(
+          // Web ise maksimum 600-800px genişlik olsun, değilse ekranı kaplasın
+          child:Container(
+          alignment: Alignment.center,
+          constraints: BoxConstraints(maxWidth: kIsWeb ? 800 : double.infinity),
+          child: Column(
             children: [
               //TAbBAR
               TabBar(
@@ -63,7 +70,9 @@ class Tabbar_BodyState extends State<Tabbar> {
                  ),
                ),
             ],
-         ),
+          ),
+        ),
+       ),
       ),
      );
    }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // Web kontrolü için
 
 class Bilgi extends StatefulWidget {
   @override
@@ -11,8 +12,11 @@ class _BilgiPage extends State<Bilgi> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
-
-          child: Column(
+          child: Center( // 1. Ortalamak için Center ekleyin
+            child: SizedBox( // 2. Genişliği sınırlamak için SizedBox ekleyin
+              // Web ise maksimum 600px genişlik olsun, değilse (mobil) tam ekran
+              width: kIsWeb ? 600 : double.infinity,
+              child: Column(
             children: [
               Card(
                 shadowColor: Colors.black,
@@ -22,7 +26,7 @@ class _BilgiPage extends State<Bilgi> {
                   horizontal: 25.0,
                   vertical: 20.0,
                 ),
-                color:  Color(0xFDDDD8D8),
+                color:  Color(0xFDEAE5E5),
                   child:Center(
                     child: Column(
                       children: [
@@ -60,7 +64,7 @@ class _BilgiPage extends State<Bilgi> {
                   horizontal: 25.0,
                   vertical: 20.0,
                 ),
-                color: Color(0xFDDDD8D8),
+                color: Color(0xFDEAE5E5),
                   child:Center(
                     child: Column(
                       children: [
@@ -94,6 +98,8 @@ class _BilgiPage extends State<Bilgi> {
 
           ],
         ),
+            ),
+          ),
       ),
     );
   }
