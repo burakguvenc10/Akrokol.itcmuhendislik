@@ -11,15 +11,18 @@ class Bottombar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (kIsWeb) {
+      return const SizedBox.shrink();
+    }
+
     return ConvexAppBar(
-        style: kIsWeb ? TabStyle.react : TabStyle.fixedCircle,
+        style: TabStyle.fixedCircle,
         height: 50,
         backgroundColor: Color(0xFDE11010),
         activeColor: Color(0xfff1f0f0),
         items: [
           TabItem(icon: CupertinoIcons.home, title: 'Anasayfa'),
-          if (!kIsWeb)
-            TabItem(icon: FontAwesomeIcons.wind, title: 'Ürünler'),
+          TabItem(icon: FontAwesomeIcons.wind, title: 'Ürünler'),
           TabItem(icon: CupertinoIcons.info_circle, title: 'Bilgi'),
         ],
         initialActiveIndex: 0,

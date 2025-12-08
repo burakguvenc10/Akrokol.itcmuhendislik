@@ -50,7 +50,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(preferredSize: Size(MediaQuery.of(context).size.width,56.0), child: Appbar()),
+      appBar: PreferredSize(preferredSize: Size(MediaQuery.of(context).size.width,56.0), child: Appbar(pageController: pageController)),
       bottomNavigationBar: Bottombar(onTap: onTabTapped,),
       body:  PageView(
         controller: pageController,

@@ -100,21 +100,29 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
             child: SizedBox( // 2. Genişliği sınırlamak için SizedBox ekleyin
               // Web ise maksimum 600px genişlik olsun, değilse (mobil) tam ekran
               width: kIsWeb ? 600 : double.infinity,
-              child: Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Form(
-            key: _formkeyHava,
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            child: Column(
-              children: [
+              child: Card(
+                elevation: 8,
+                shadowColor: Colors.black,
+                margin: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  side: BorderSide(color: Colors.grey.shade200, width: 1),
+                ),
+                color: Colors.white,
+                child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Form(
+                key: _formkeyHava,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: Column(
+                children: [
                 Container(
                   alignment: Alignment.centerRight,
                   child: Column(
                     children: [
-                      Row( // Sütun yerine Satır (Row) kullanıyoruz
-                        mainAxisAlignment: MainAxisAlignment.end, // Sağa yasla
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-
                           Column(
                             children: [
                               IconButton(
@@ -166,6 +174,7 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                 SizedBox(
                   height: 13,
                 ),
+
                 TextFormField(
                   controller: Havadebisi_controller,
                   decoration: InputDecoration(
@@ -243,189 +252,78 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                   height: 17,
                 ),
 
+                  TextFormField(
+                    controller: Kanalcapi_controller,
+                    decoration: InputDecoration(
+                      errorStyle: TextStyle(color: Colors.redAccent),
+                      border: OutlineInputBorder(),
+                      labelText: 'Kanal Çapı',
+                      hintText: 'Kanal Çapını(mm) Yazınız',
 
-                TextFormField(
-                  controller: Kanalcapi_controller,
-                  decoration: InputDecoration(
-                    errorStyle: TextStyle(color: Colors.redAccent),
-                    border: OutlineInputBorder(),
-                    labelText: 'Kanal Çapı',
-                    suffixText: 'mm',
-                    hintText: 'Kanal Çapını Yazınız (mm)',
-                    //Button
-                    suffixIcon: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        //Arttır
-                        IconButton(
-                          color: Colors.red,
-                          icon: Icon(Icons.add_circle),
-                          iconSize: 28,
-                          onPressed: () {
-                            setState(() {
-                              Kanalcapi_controller.value.text;
-                              KanalcapiArttir();
-                              if(Havadebisi_controller.value.text!= null && Kanalcapi_controller.value.text != null ){
-                                Havahizi_Sonuc();
-                                  if(PrizmatikkanalA_controller.value.text != null && Kanalcapi_controller.value.text != null){
-                                    prizmatikkanalB_check = true;
-                                    PrizmatikkanalB_Sonuc();
-                                      if(PrizmatikkanalA_controller.value.text != null && PrizmatikkanalB_controller.value.text != null && Kanalboyu_controller.value.text != null) {
-                                        KanalAlani_Sonuc();
-                                        kanalalani_check = true;
-                                      }
-                                      else{
-                                        kanalalani_check = false;
-                                      }
-                                      if(Aci_controller.value != null && R1_controller.value != null){
-                                        DirsekAlani_Sonuc();
-                                        dirsekalani_check = true;
-                                      }
-                                      else{
-                                        dirsekalani_check = false;
-                                      }
-                                  }
-                                  else{
-                                    prizmatikkanalB_check = false;
-                                  }
-                              }
-                              if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
-                                Basinckaybi_Sonuc();
-                                basinckaybi_check = true;
-                                  if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
-                                    ToplambasincKaybi_Sonuc();
-                                    toplambasinckaybi_check = true;
-                                  }
-                                  else{
-                                    toplambasinckaybi_check = false;
-                                  }
-                              }
-                              else{
-                                basinckaybi_check = false;
-                              }
-                            });
-                          },
-                        ),
+                      // 3 Butonu yan yana koymak için Row
+                      suffixIcon: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
 
-                        //Azalt
-                        IconButton(
-                          color: Colors.red,
-                          icon: Icon(Icons.remove_circle),
-                          iconSize: 28,
-                          onPressed: () {
-                            setState(() {
-                              Kanalcapi_controller.value.text;
-                              KanalcapiAzalt();
-                              if(Havadebisi_controller.value.text!= null && Kanalcapi_controller.value.text!= null ){
-                                Havahizi_Sonuc();
-                                  if(PrizmatikkanalA_controller.value.text != null && Kanalcapi_controller.value.text != null){
-                                    prizmatikkanalB_check = true;
-                                    PrizmatikkanalB_Sonuc();
-                                      if(PrizmatikkanalA_controller.value.text != null && PrizmatikkanalB_controller.value.text != null && Kanalboyu_controller.value.text != null) {
-                                        KanalAlani_Sonuc();
-                                        kanalalani_check = true;
-                                      }
-                                      else{
-                                        kanalalani_check = false;
-                                      }
-                                      if(Aci_controller.value != null && R1_controller.value != null){
-                                        DirsekAlani_Sonuc();
-                                        dirsekalani_check = true;
-                                      }
-                                      else{
-                                        dirsekalani_check = false;
-                                      }
-                                 }
-                                  else{
-                                    prizmatikkanalB_check = false;
-                                  }
-                              }
-                              if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
-                                Basinckaybi_Sonuc();
-                                basinckaybi_check = true;
-                                  if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
-                                    ToplambasincKaybi_Sonuc();
-                                    toplambasinckaybi_check = true;
-                                  }
-                                  else{
-                                    toplambasinckaybi_check = false;
-                                  }
-                              }
-                              else{
-                                basinckaybi_check = false;
-                              }
-                            });
-                          },
-                        ),
-                        //Clear
-                        IconButton(
-                          onPressed: Kanalcapi_controller.clear,
-                          icon: Icon(Icons.clear_sharp),
-                          color: Colors.red,
-                        ),
-                     ],
-                   ),
+                          // 1. Arttır Butonu
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            color: Colors.red,
+                            icon: Icon(Icons.add_circle),
+                            iconSize: 24,
+                            onPressed: () {
+                              setState(() {
+                                KanalcapiArttir();
+                                if(Havadebisi_controller.value.text.isNotEmpty){
+                                  // Hesaplama fonksiyonlarını çağır
+                                  Havahizi_Sonuc();
+                                  Basinckaybi_Sonuc();
+                                }
+                              });
+                            },
+                          ),
+
+                          // 2. Azalt Butonu
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            color: Colors.red,
+                            icon: Icon(Icons.remove_circle),
+                            iconSize: 24,
+                            onPressed: () {
+                              setState(() {
+                                KanalcapiAzalt();
+                                if(Havadebisi_controller.value.text.isNotEmpty){
+                                  Havahizi_Sonuc();
+                                  Basinckaybi_Sonuc();
+                                }
+                              });
+                            },
+                          ),
+
+                          // 3. (GERİ EKLENEN) Temizleme Butonu
+                          IconButton(
+                            padding: EdgeInsets.zero,
+                            constraints: BoxConstraints(),
+                            icon: Icon(Icons.clear_sharp),
+                            color: Colors.red,
+                            iconSize: 24,
+                            onPressed: () {
+                              Kanalcapi_controller.clear();
+                            },
+                          ),
+
+                        ],
+                      ),
+                    ),
+                    maxLines: 1,
+                    keyboardType: TextInputType.number,
+                    // ... Diğer özellikler
                   ),
-                  keyboardType: TextInputType.number,
-                  maxLines: 1,
-                  onSaved: (deger) {
-                    setState(() {
-                    });
-                  },
-                  onChanged: (deger) {
-                    setState(() {
-                      if(Havadebisi_controller.value.text!= null && Kanalcapi_controller.value.text!= null ){
-                        Havahizi_Sonuc();
-                          if(PrizmatikkanalA_controller.value.text != null && Kanalcapi_controller.value.text != null){
-                            prizmatikkanalB_check = true;
-                            PrizmatikkanalB_Sonuc();
-                              if(PrizmatikkanalA_controller.value.text != null && PrizmatikkanalB_controller.value.text != null && Kanalboyu_controller.value.text != null) {
-                                KanalAlani_Sonuc();
-                                kanalalani_check = true;
-                              }
-                              else{
-                                kanalalani_check = false;
-                              }
-                              if(Aci_controller.value != null && R1_controller.value != null){
-                                DirsekAlani_Sonuc();
-                                dirsekalani_check = true;
-                              }
-                              else{
-                                dirsekalani_check = false;
-                              }
-                          }
-                          else{
-                            prizmatikkanalB_check = false;
-                          }
-                      }
-                      if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
-                        Basinckaybi_Sonuc();
-                        basinckaybi_check = true;
-                          if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
-                            ToplambasincKaybi_Sonuc();
-                            toplambasinckaybi_check = true;
-                          }
-                          else{
-                            toplambasinckaybi_check = false;
-                          }
-                      }
-                      else{
-                        basinckaybi_check = false;
-                      }
-                    });
 
-                  },
-                  validator: (deger) {
-                    if (deger!.isEmpty) {
-                      return 'Bir Değer Girmediniz!';
-                    }
-                    else{
-                      return null;
-                    }
-                  },
-                ),
-
-                SizedBox(
+                  SizedBox(
                   height: 17,
                 ),
 
@@ -435,7 +333,7 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                     hintText: 'Hava Hızını Yazınız (m/s)',
                     errorStyle: TextStyle(color: Colors.redAccent),
                     border: OutlineInputBorder(),
-                    labelText: 'Hava Hızı: ',
+                    labelText: 'Hava Hızı',
                     suffixIcon: IconButton(
                       onPressed: Havahizi_controller.clear,
                       icon: Icon(Icons.clear_sharp),
@@ -644,60 +542,12 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    RadioListTile(
-                          value: '0.023',
-                          groupValue: sec,
-                          activeColor: Colors.red,
-                          onChanged: (deger){
-                            setState(() {
-                              if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
-                                sec = deger.toString();
-                                Basinckaybi_Sonuc();
-                                basinckaybi_check = true;
-                                KanalYuzeyi.text = "Çok Düzgün";
-                              }
-                              else{
-                                basinckaybi_check = false;
-                              }
-                              if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
-                                ToplambasincKaybi_Sonuc();
-                                toplambasinckaybi_check = true;
-                                KanalYuzeyi.text = "Çok Düzgün";
-                              }
-                              else{
-                                toplambasinckaybi_check = false;
-                              }
-                            });
-                          },title: Text('Çok Düzgün'),
-                    ),
-                    RadioListTile(
-                         value: '0.03',
-                         groupValue: sec,
-                         activeColor: Colors.red,
-                         onChanged: (deger){
-                           setState(() {
-                             if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
-                               sec = deger.toString();
-                               Basinckaybi_Sonuc();
-                               basinckaybi_check = true;
-                               KanalYuzeyi.text = "Düzgün";
-                             }
-                             else{
-                               basinckaybi_check = false;
-                             }
-                             if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
-                               ToplambasincKaybi_Sonuc();
-                               toplambasinckaybi_check = true;
-                               KanalYuzeyi.text = "Düzgün";
-                             }
-                             else{
-                               toplambasinckaybi_check = false;
-                             }
-                           });
-                         },title: Text('Düzgün'),
-                     ),
-                      RadioListTile(
-                            value: '0.05',
+                  Row(
+                  children: [
+                    // 1. Seçenek
+                    Expanded(
+                      child: RadioListTile(
+                            value: '0.023',
                             groupValue: sec,
                             activeColor: Colors.red,
                             onChanged: (deger){
@@ -706,7 +556,7 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                                   sec = deger.toString();
                                   Basinckaybi_Sonuc();
                                   basinckaybi_check = true;
-                                  KanalYuzeyi.text = "Pürüzlü";
+                                  KanalYuzeyi.text = "Çok Düzgün";
                                 }
                                 else{
                                   basinckaybi_check = false;
@@ -714,15 +564,77 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                                 if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
                                   ToplambasincKaybi_Sonuc();
                                   toplambasinckaybi_check = true;
-                                  KanalYuzeyi.text = "Pürüzlü";
+                                  KanalYuzeyi.text = "Çok Düzgün";
                                 }
                                 else{
                                   toplambasinckaybi_check = false;
                                 }
                               });
-                            },title: Text('Pürüzlü'),
+                            },title: Text('Çok Düzgün'),
+                          ),
+                    ),
+                    Expanded(
+                      child: RadioListTile(
+                              value: '0.03',
+                              groupValue: sec,
+                              activeColor: Colors.red,
+                              onChanged: (deger){
+                                setState(() {
+                                  if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
+                                    sec = deger.toString();
+                                    Basinckaybi_Sonuc();
+                                    basinckaybi_check = true;
+                                    KanalYuzeyi.text = "Düzgün";
+                                  }
+                                  else{
+                                    basinckaybi_check = false;
+                                  }
+                                  if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
+                                    ToplambasincKaybi_Sonuc();
+                                    toplambasinckaybi_check = true;
+                                    KanalYuzeyi.text = "Düzgün";
+                                  }
+                                  else{
+                                    toplambasinckaybi_check = false;
+                                  }
+                                });
+                              },title: Text('Düzgün'),
+                            ),
+                    ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile(
+                          value: '0.05',
+                          groupValue: sec,
+                          activeColor: Colors.red,
+                          onChanged: (deger){
+                            setState(() {
+                              if(Havadebisi_controller.value.text != null && Havahizi_controller.value.text != null){
+                                sec = deger.toString();
+                                Basinckaybi_Sonuc();
+                                basinckaybi_check = true;
+                                KanalYuzeyi.text = "Pürüzlü";
+                              }
+                              else{
+                                basinckaybi_check = false;
+                              }
+                              if(Kanalboyu_controller.value.text != null && Basinckaybi_controller.value.text != null){
+                                ToplambasincKaybi_Sonuc();
+                                toplambasinckaybi_check = true;
+                                KanalYuzeyi.text = "Pürüzlü";
+                              }
+                              else{
+                                toplambasinckaybi_check = false;
+                              }
+                            });
+                          },title: Text('Pürüzlü'),
+                        ),
                       ),
-                      RadioListTile(
+                      Expanded(
+                        child: RadioListTile(
                           value: '0.06',
                           groupValue: sec,
                           activeColor: Colors.red,
@@ -747,11 +659,12 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                               }
                             });
                           },title: Text('Çok Pürüzlü'),
+                        ),
                       ),
-
                     ],
+                  )
+                  ],
                 ),
-
                 SizedBox(
                   height: 17,
                 ),
@@ -1147,7 +1060,8 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
 
               ],
             ),
-          ),
+              ),
+             ),
             ),
           ),
         ),
