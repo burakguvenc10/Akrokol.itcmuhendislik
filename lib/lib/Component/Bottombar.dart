@@ -18,7 +18,7 @@ class Bottombar extends StatelessWidget {
     return ConvexAppBar(
         style: TabStyle.fixedCircle,
         height: 50,
-        backgroundColor: Color(0xFDE11010),
+        backgroundColor: Color(0xFDE61F1F),
         activeColor: Color(0xfff1f0f0),
         items: [
           TabItem(icon: CupertinoIcons.home, title: 'Anasayfa'),

@@ -1,78 +1,67 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter/foundation.dart' show kIsWeb; // Web kontrolü için
 
-// 1. implements PreferredSizeWidget eklemeliyiz (AppBar için zorunludur)
 class Appbar extends StatelessWidget implements PreferredSizeWidget {
+  // Sayfa değiştirmek için dışarıdan bir fonksiyon alıyoruz
+  final Function(int) onPageChange;
 
-  // 2. Controller'ı dışarıdan almalıyız ki ana sayfayı yönetebilsin
-  final PageController pageController;
-
-  // Constructor (Kurucu metod) ile controller'ı istiyoruz
-  const Appbar({Key? key, required this.pageController}) : super(key: key);
+  const Appbar({Key? key, required this.onPageChange}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      // HEM MOBİL HEM WEB İÇİN ORTALA
-      centerTitle: true,
-
-      // Başlık boşluğunu sıfırla (Web'de menü sığsın diye)
-      titleSpacing: 0,
-
-      // --- TITLE KISMI ---
-      title: kIsWeb
-          ? Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        mainAxisSize: MainAxisSize.min,
+      backgroundColor: Colors.redAccent,
+      // Logo ve Başlık
+      title: Row(
+        mainAxisSize: MainAxisSize.min, // Sadece içeriği kadar yer kapla
         children: [
-          // Web Logosu (Beyaz)
-          Image.asset('assets/Logo.png', height: 30, color: Colors.white),
-
-          SizedBox(width: 40),
-
-          TextButton.icon(
-            icon: Icon(CupertinoIcons.home, color: Colors.white),
-            label: Text("Anasayfa", style: TextStyle(color: Colors.white)),
-            onPressed: () => pageController.jumpToPage(0),
-          ),
-          SizedBox(width: 20),
-          TextButton.icon(
-            icon: Icon(CupertinoIcons.info_circle, color: Colors.white),
-            label: Text("Bilgi", style: TextStyle(color: Colors.white)),
-            onPressed: () => pageController.jumpToPage(1),
-          ),
+          // Logonuz varsa:
+          Image.asset('assets/Logo.png', height: 20, color: Colors.white),
         ],
-      )
-      // --- MOBİL GÖRÜNÜMÜ (BEYAZ ZEMİN, KIRMIZI LOGO) ---
-          : Image.asset(
-        'assets/Logo.png',
-        height: 20, // Logo boyutu
-        color: Colors.redAccent, // Kırmızı Logo
       ),
 
-      actions: null,
+      // --- WEB İÇİN NAVİGASYON BUTONLARI ---
+      actions: kIsWeb
+          ? [
+        // 1. HAVA KANALI BUTONU
+        TextButton(
+          onPressed: () => onPageChange(0), // 0. Sayfaya git
+          child: Text(
+            "Hava Kanalı",
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
 
-      // --- ARKA PLAN RENGİ AYARI ---
-      // Web ise Kırmızı, Mobil ise Beyaz
-      backgroundColor: kIsWeb ? Colors.redAccent : Colors.white,
+        SizedBox(width: 20),
 
-      // --- İKON TEMASI (GERİ BUTONU VS.) ---
-      // Mobil arka plan beyaz olduğu için ikonlar kırmızı olsun
-      iconTheme: IconThemeData(
-        color: kIsWeb ? Colors.white : Colors.redAccent,
-      ),
+        // 2. FAN MOTORU BUTONU
+        TextButton(
+          onPressed: () => onPageChange(1), // 1. Sayfaya git
+          child: Text(
+            "Fan Motoru",
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
 
-      elevation: 0,
-      automaticallyImplyLeading: true,
+        SizedBox(width: 20),
+
+        // 3. BİLGİ BUTONU (Varsa)
+        TextButton(
+          onPressed: () => onPageChange(2), // 2. Sayfaya git
+          child: Text(
+            "Bilgi",
+            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+          ),
+        ),
+
+        SizedBox(width: 20), // Sağ boşluk
+      ]
+          : null, // Mobil ise actions boş kalsın (veya hamburger menü vs.)
+
+      centerTitle: kIsWeb ? false : true, // Web'de sola yaslı, mobilde ortalı
     );
   }
 
-
-
-  // 3. PreferredSizeWidget ayarı
   @override
   Size get preferredSize => Size.fromHeight(kToolbarHeight);
 }
