@@ -1104,14 +1104,15 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
   // --- BAŞLIKLAR (Hava Kanalı İçin Özel) ---
   List<String> basliklar = [
     "Hava Debisi (m3/h)",
-    "Hava Hızı (m/s)",
     "Kanal Çapı (mm)",
-    "Kanal A (mm)",
-    "Kanal B (mm)",
-    "Birim Basınç Kaybı (Pa/m)",
+    "Hava Hızı (m/s)",
+    "Prizmatik Kanal A (mm)",
+    "Prizmatik Kanal B (mm)",
+    "Kanal Yüzeyi",
+    "Basınç Kaybı (Pa/m)",
     "Kanal Boyu (m)",
     "Kanal Alanı (m2)",
-    "Top. Basınç Kaybı (Pa)",
+    "Toplam Basınç Kaybı (Pa)",
     "Dirsek Açısı",
     "Dirsek R1 (mm)",
     "Dirsek Alanı (m2)"
@@ -1128,10 +1129,11 @@ Future<void> excelExportHavaKanali(BuildContext context) async {
   // Controller'lardan verileri alıyoruz
   List<String> veriler = [
     Havadebisi_controller.text,
-    Havahizi_controller.text,
     Kanalcapi_controller.text,
+    Havahizi_controller.text,
     PrizmatikkanalA_controller.text,
     PrizmatikkanalB_controller.text,
+    KanalYuzeyi.text,
     Basinckaybi_controller.text,
     Kanalboyu_controller.text,
     Kanalalani_controller.text,
