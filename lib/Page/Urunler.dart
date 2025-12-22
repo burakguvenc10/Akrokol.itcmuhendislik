@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../Component/Webview_item.dart';
-import '../Page/Webview.dart';
+import 'Webview.dart';
 
 class Urunler extends StatefulWidget {
   @override

@@ -53,9 +53,9 @@ class Fan_motoru extends State<Fan_motoru_Tabview> {
       /// FAN MOTORU TAB_ITEM
       child: SingleChildScrollView(
           child: Center( // 1. Ortalamak için Center ekleyin
-            child: SizedBox( // 2. Genişliği sınırlamak için SizedBox ekleyin
+            child: Container( // 2. Genişliği sınırlamak için SizedBox ekleyin
               // Web ise maksimum 600px genişlik olsun, değilse (mobil) tam ekran
-              width: kIsWeb ? 600 : double.infinity,
+              width: kIsWeb ? 800 : double.infinity,
               child: Card(
                 elevation: 8,
                   shadowColor: Colors.black,
