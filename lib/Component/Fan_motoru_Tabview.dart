@@ -72,6 +72,16 @@ class Fan_motoru extends State<Fan_motoru_Tabview> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     child: Column(
                       children:[
+                        Text(
+                          'FAN MOTORU HESABI',
+                          style: TextStyle(fontSize: 14,
+                            fontWeight: FontWeight.w300, // Daha ince ve zarif
+                            color: Colors.grey[800],
+                            letterSpacing: 2, // Çok geniş harf aralığı
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+
                         Container(
                           alignment: Alignment.centerRight,
                           child: Column(

@@ -120,6 +120,16 @@ class Hava_kanali extends State<Hava_kanali_Tabview>{
                   alignment: Alignment.centerRight,
                   child: Column(
                     children: [
+                      Text(
+                        'HAVA KANALI HESABI',
+                        style: TextStyle(fontSize: 14,
+                          fontWeight: FontWeight.w300, // Daha ince ve zarif
+                          color: Colors.grey[800],
+                          letterSpacing: 2, // Çok geniş harf aralığı
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
